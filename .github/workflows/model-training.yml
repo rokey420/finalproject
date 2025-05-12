@@ -3,28 +3,37 @@ name: Model Pipeline
 on:
   workflow_dispatch:
 
+permissions:
+  contents: write  # Needed to allow pushing model files to GitHub
+
 jobs:
   register_model:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Checkout repository
+    - name: 📥 Checkout repository
       uses: actions/checkout@v2
-      
-    - name: Set up Python
+
+    - name: 🐍 Set up Python
       uses: actions/setup-python@v2
       with:
         python-version: '3.9'
-        
-    - name: Install dependencies
+
+    - name: 📦 Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install hopsworks
-        pip install scikit-learn
-        pip install joblib
-        pip install numpy
-        
-    - name: Run model registration test
+        pip install hopsworks scikit-learn joblib numpy pandas
+
+    - name: 🧠 Train and register model
       env:
         HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
       run: python train_model.py
+
+    - name: 🔁 Commit and push model artifacts to GitHub
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git pull origin main
+        git add model_artifacts/
+        git commit -m "🤖 Add trained model artifacts via CI"
+        git push origin main
