@@ -3,16 +3,18 @@ import pandas as pd
 
 @st.cache_data(ttl=3600)
 def load_metrics():
-    return pd.read_csv("metrics.csv")  # Ensure this file exists with columns: model, location_id, MAE, MAPE
+    return pd.read_csv("metrics.csv")
 
-metrics = load_metrics()
+st.title("📊 Model Monitoring Dashboard")
 
-st.title("📊 Citi Bike Model Monitoring")
-location = st.selectbox("Select Location", metrics["location_id"].unique())
-filtered = metrics[metrics["location_id"] == location]
+try:
+    metrics = load_metrics()
+    station = st.selectbox("Filter by station", metrics["station"].unique())
+    filtered = metrics[metrics["station"] == station]
+    st.write("### Evaluation Metrics")
+    st.dataframe(filtered)
 
-st.write("### Model Evaluation")
-st.dataframe(filtered)
-
-best_model = filtered.sort_values("MAE").iloc[0]
-st.success(f"✅ Best Model: {best_model['model']} with MAE: {best_model['MAE']:.2f}, MAPE: {best_model['MAPE']:.2f}%")
+    best = filtered.sort_values("MAE").iloc[0]
+    st.success(f"✅ Best Model: {best['model']} (MAE: {best['MAE']:.2f}, MAPE: {best['MAPE']:.2f}%)")
+except Exception:
+    st.warning("⚠️ No metrics.csv found. Please add model evaluation logging.")
