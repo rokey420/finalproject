@@ -43,8 +43,8 @@ def main():
         # Connect to Hopsworks
         logger.info("Connecting to Hopsworks...")
         project = hopsworks.login(
-            project="CitiBike_Final",
-            api_key_value="NoSnqjvqruam2G2e.of4xXCy3fxpjkmgdpJflgRoTRbWkTsXdTM3hlQMGlyU37sXiqgLgGbSyBh57edxq"
+            project="tejeshk1",
+            api_key_value="7YR49cNcWeqHlwAS.6qHl9YCSFSWdLWlJxOOc3oCCvLd8laaC9mk8SzZyl6dSsneuwkFJU52IJNkOUYHN"
         )
         logger.info(f"Connected to project: {project.name}")
         
